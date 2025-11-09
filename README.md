@@ -1,43 +1,62 @@
-# Todo List Manager (Go CLI)
+# 📝 Todo API - Go Clean Architecture
 
-یک **لیست‌کار تعاملی خط فرمانی (CLI)** نوشته‌شده با زبان **Go** که به شما امکان مدیریت تسک‌های روزمره را با قابلیت‌های پیشرفته می‌دهد.
+Simple **Todo API** built with **Go**, **Gin**, and **Swagger docs**, following the **Clean Architecture** pattern.
 
-![Go](https://img.shields.io/badge/Go-1.20%2B-blue?logo=go)
-![License](https://img.shields.io/badge/License-MIT-green)
+---
 
-## ✨ ویژگی‌ها
+## 🚀 Run in 3 Seconds
 
-- ✅ افزودن تسک با **عنوان، یادداشت، اولویت (Low/Medium/High)** و **تگ‌ها**
-- ✅ علامت‌گذاری تسک به عنوان **انجام‌شده**
-- ✅ حذف تسک با تأیید کاربر
-- ✅ نمایش لیست تسک‌ها (همه یا فقط انجام‌نشده‌ها)
-- ✅ ذخیره‌سازی خودکار تمام داده‌ها در فایل `tasks.json`
-- ✅ رابط کاربری ساده و تعاملی در خط فرمان
-- ✅ استفاده از `UUID` برای شناسه‌ی منحصربه‌فرد هر تسک
-- ✅ زمان‌های ایجاد و بروزرسانی برای هر تسک
-
-## 🚀 نحوه اجرا
-
-### پیش‌نیازها
-- Go 1.20 یا بالاتر
-
-### 1. کلون کردن ریپو (یا کپی فایل‌ها)
 ```bash
-git clone https://github.com/Amirali-nourian/Todo-list.git
-cd Todo-list
+# 1. Clone the repository
+git clone https://github.com/mahdighadiriii/Todo-list-golang.git
+cd Todo-list-golang
+
+# 2. Run the server
+go run cmd/main.go
 ```
- ## نمایشی از رابط کاربری
+
+Server runs at: [http://localhost:8080](http://localhost:8080)
+
+---
+
+## 📘 Swagger UI (API Docs)
+
+Open in your browser:
+👉 [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+
+Then click **“Try it out”** to test all endpoints!
+
+---
+
+## 🧩 Endpoints
+
+| Method   | Endpoint             | Description             |
+| -------- | -------------------- | ----------------------- |
+| `POST`   | `/api/v1/todos`      | Create a todo           |
+| `GET`    | `/api/v1/todos`      | List all todos          |
+| `GET`    | `/api/v1/todos/{id}` | Get one todo            |
+| `PUT`    | `/api/v1/todos/{id}` | Update (mark completed) |
+| `DELETE` | `/api/v1/todos/{id}` | Delete a todo           |
+
+---
+
+## ⚙️ Tech Stack
+
+* **Go + Gin**
+* **Clean Architecture** (inspired by DDD)
+* **In-memory DB** (easy to swap later)
+* **Auto-generated Swagger Docs**
+
+---
+
+## Made with love by [Mahdi](https://github.com/https://github.com/mahdighadiriii)
+
+
+
+### 🧾 Final Step
+
 ```bash
-
-========================================
-TODO LIST MANAGER
-========================================
-1. Add New Task
-2. List Tasks
-3. Mark Task as Done
-4. Delete Task
-5. Exit
-========================================
-Select an option (1-5):
-
+git add README.md
+git commit -m "docs: add simple README"
+git push origin develop
 ```

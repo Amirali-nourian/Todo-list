@@ -1,0 +1,175 @@
+definitions:
+  entity.Todo:
+    properties:
+      completed:
+        type: boolean
+      created_at:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+  handler.createReq:
+    properties:
+      title:
+        example: Buy milk
+        type: string
+    required:
+    - title
+    type: object
+  handler.updateReq:
+    properties:
+      completed:
+        example: true
+        type: boolean
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/todos:
+    get:
+      description: Retrieve list of all todo items
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Todo'
+            type: array
+        "500":
+          description: Server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all todos
+      tags:
+      - todos
+    post:
+      consumes:
+      - application/json
+      description: Create a todo item with a title
+      parameters:
+      - description: Todo title
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handler.createReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Todo'
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new todo
+      tags:
+      - todos
+  /api/v1/todos/{id}:
+    delete:
+      description: Remove a todo by ID
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Todo not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a todo
+      tags:
+      - todos
+    get:
+      description: Get todo by ID
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Todo'
+        "404":
+          description: Todo not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a single todo
+      tags:
+      - todos
+    put:
+      consumes:
+      - application/json
+      description: Mark a todo as completed or not
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Completed status
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handler.updateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Todo not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a todo
+      tags:
+      - todos
+swagger: "2.0"
