@@ -1,22 +1,14 @@
-package handler
+﻿package handler
 
 import (
 	"net/http"
 	"strconv"
-	"todo-list-golang/internal/domain/service"
+	"github.com/Amirali-nourian/Todo-list-golang/internal/domain"
+	"github.com/Amirali-nourian/Todo-list-golang/internal/domain/service" // Ù…Ø·Ù…Ø¦Ù† Ø´Ùˆ Ú©Ù‡ Ø§ÛŒÙ† import Ø¯Ø±Ø³ØªÙ‡
 
 	"github.com/gin-gonic/gin"
 )
 
-// Request structs for Swagger
-type createReq struct {
-	Title string `json:"title" binding:"required" example:"Buy milk"`
-}
-type updateReq struct {
-	Completed bool `json:"completed" example:"true"`
-}
-
-// === STRUCT & CONSTRUCTOR ===
 type TodoHandler struct {
 	Service *service.TodoService
 }
@@ -25,122 +17,147 @@ func NewTodoHandler(s *service.TodoService) *TodoHandler {
 	return &TodoHandler{Service: s}
 }
 
-// === SWAGGER ENDPOINTS ===
-
 // CreateTodo godoc
-// @Summary      Create a new todo
-// @Description  Create a todo item with a title
-// @Tags         todos
-// @Accept       json
-// @Produce      json
-// @Param        body  body      handler.createReq  true  "Todo title"
-// @Success      201   {object}  entity.Todo
-// @Failure      400   {object}  map[string]string  "Invalid input"
-// @Failure      500   {object}  map[string]string  "Server error"
-// @Router       /api/v1/todos [post]
-func (h *TodoHandler) Create(c *gin.Context) {
-	var req struct {
-		Title string `json:"title" binding:"required"`
-	}
-	if err := c.ShouldBindJSON(&req); err != nil {
+// @Summary Create a new todo
+// @Description Create a new todo item
+// @Tags todos
+// @Accept  json
+// @Produce  json
+// @Param todo body domain.Todo true "Todo object"
+// @Success 201 {object} domain.Todo
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /todos [post]
+func (h *TodoHandler) CreateTodo(c *gin.Context) {
+	var todo domain.Todo
+	if err := c.ShouldBindJSON(&todo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	todo, err := h.Service.CreateTodo(req.Title)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	// Ø­Ø§Ù„Ø§ Ú©Ù„ Ø¢Ø¨Ø¬Ú©Øª todo Ø±Ùˆ Ø¨Ù‡ Ø³Ø±ÙˆÛŒØ³ Ù…ÛŒâ€ŒÙØ±Ø³ØªÛŒÙ…
+	if err := h.Service.CreateTodo(&todo); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create todo"})
 		return
 	}
+
 	c.JSON(http.StatusCreated, todo)
 }
 
 // GetAllTodos godoc
-// @Summary      Get all todos
-// @Description  Retrieve list of all todo items
-// @Tags         todos
-// @Produce      json
-// @Success      200  {array}   entity.Todo
-// @Failure      500  {object}  map[string]string  "Server error"
-// @Router       /api/v1/todos [get]
-func (h *TodoHandler) GetAll(c *gin.Context) {
-	todos, err := h.Service.ListTodos()
+// @Summary Get all todos
+// @Description Get a list of all todo items
+// @Tags todos
+// @Produce  json
+// @Success 200 {array} domain.Todo
+// @Failure 500 {object} map[string]string
+// @Router /todos [get]
+func (h *TodoHandler) GetAllTodos(c *gin.Context) {
+	// Ø§Ø³Ù… ØªØ§Ø¨Ø¹ Ø¯Ø± Ø³Ø±ÙˆÛŒØ³ GetAllTodos Ø¨ÙˆØ¯
+	todos, err := h.Service.GetAllTodos()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get todos"})
 		return
 	}
 	c.JSON(http.StatusOK, todos)
 }
 
-// GetOneTodo godoc
-// @Summary      Get a single todo
-// @Description  Get todo by ID
-// @Tags         todos
-// @Produce      json
-// @Param        id   path      uint  true  "Todo ID"
-// @Success      200  {object}  entity.Todo
-// @Failure      404  {object}  map[string]string  "Todo not found"
-// @Router       /api/v1/todos/{id} [get]
-func (h *TodoHandler) GetOne(c *gin.Context) {
+// GetTodoByID godoc
+// @Summary Get a todo by ID
+// @Description Get a single todo item by its ID
+// @Tags todos
+// @Produce  json
+// @Param id path int true "Todo ID"
+// @Success 200 {object} domain.Todo
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /todos/{id} [get]
+func (h *TodoHandler) GetTodoByID(c *gin.Context) {
 	idStr := c.Param("id")
-	id, _ := strconv.ParseUint(idStr, 10, 32)
-	todo, err := h.Service.GetTodo(uint(id))
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
 		return
 	}
+
+	// Ø§Ø³Ù… ØªØ§Ø¨Ø¹ Ø¯Ø± Ø³Ø±ÙˆÛŒØ³ GetTodoByID Ø¨ÙˆØ¯
+	todo, err := h.Service.GetTodoByID(uint(id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
+		return
+	}
+
 	c.JSON(http.StatusOK, todo)
 }
 
 // UpdateTodo godoc
-// @Summary      Update a todo
-// @Description  Mark a todo as completed or not
-// @Tags         todos
-// @Accept       json
-// @Produce      json
-// @Param        id     path      uint  true  "Todo ID"
-// @Param        body   body      handler.updateReq  true  "Completed status"
-// @Success      200    {object}  map[string]string  "Updated"
-// @Failure      400    {object}  map[string]string  "Invalid input"
-// @Failure      404    {object}  map[string]string  "Todo not found"
-// @Router       /api/v1/todos/{id} [put]
-func (h *TodoHandler) Update(c *gin.Context) {
+// @Summary Update a todo
+// @Description Update an existing todo item by ID
+// @Tags todos
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Todo ID"
+// @Param todo body domain.Todo true "Todo object"
+// @Success 200 {object} domain.Todo
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /todos/{id} [put]
+func (h *TodoHandler) UpdateTodo(c *gin.Context) {
 	idStr := c.Param("id")
-	id, _ := strconv.ParseUint(idStr, 10, 32)
-
-	var req struct {
-		Completed bool `json:"completed"`
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
 	}
-	if err := c.ShouldBindJSON(&req); err != nil {
+
+	// Ø§ÙˆÙ„ Ú†Ú© Ù…ÛŒâ€ŒÚ©Ù†ÛŒÙ… todo ÙˆØ¬ÙˆØ¯ Ø¯Ø§Ø±Ù‡
+	todo, err := h.Service.GetTodoByID(uint(id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
+		return
+	}
+
+	// Ø¯ÛŒØªØ§ÛŒ Ø¬Ø¯ÛŒØ¯ Ø±Ùˆ Ø§Ø² body Ù…ÛŒâ€ŒØ®ÙˆÙ†ÛŒÙ… Ùˆ Ø±ÙˆÛŒ Ø¢Ø¨Ø¬Ú©Øª Ù‚Ø¨Ù„ÛŒ Ù…ÛŒâ€ŒØ±ÛŒØ²ÛŒÙ…
+	if err := c.ShouldBindJSON(&todo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err := h.Service.UpdateTodo(uint(id), req.Completed)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+	// Ù…Ø·Ù…Ø¦Ù† Ù…ÛŒâ€ŒØ´ÛŒÙ… ID Ø¹ÙˆØ¶ Ù†Ø´Ø¯Ù‡ Ø¨Ø§Ø´Ù‡
+	todo.ID = uint(id)
+
+	// Ø³Ø±ÙˆÛŒØ³ Ù…Ø§ ÛŒÚ© Ø¢Ø¨Ø¬Ú©Øª Ú©Ø§Ù…Ù„ todo Ù…ÛŒâ€ŒØ®ÙˆØ§Ø³Øª
+	if err := h.Service.UpdateTodo(todo); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update todo"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "updated"})
+
+	c.JSON(http.StatusOK, todo)
 }
 
 // DeleteTodo godoc
-// @Summary      Delete a todo
-// @Description  Remove a todo by ID
-// @Tags         todos
-// @Produce      json
-// @Param        id   path      uint  true  "Todo ID"
-// @Success      200  {object}  map[string]string  "Deleted"
-// @Failure      404  {object}  map[string]string  "Todo not found"
-// @Router       /api/v1/todos/{id} [delete]
-func (h *TodoHandler) Delete(c *gin.Context) {
+// @Summary Delete a todo
+// @Description Delete a todo item by ID
+// @Tags todos
+// @Produce  json
+// @Param id path int true "Todo ID"
+// @Success 204 {object} nil
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /todos/{id} [delete]
+func (h *TodoHandler) DeleteTodo(c *gin.Context) {
 	idStr := c.Param("id")
-	id, _ := strconv.ParseUint(idStr, 10, 32)
-
-	err := h.Service.DeleteTodo(uint(id))
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "deleted"})
+
+	if err := h.Service.DeleteTodo(uint(id)); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found or failed to delete"})
+		return
+	}
+
+	c.JSON(http.StatusNoContent, nil)
 }

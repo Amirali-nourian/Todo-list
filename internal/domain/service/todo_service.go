@@ -1,48 +1,41 @@
-package service
+﻿package service
 
-import (
-    "todo-list-golang/internal/domain/entity"
-    "todo-list-golang/internal/domain/repository"
-)
+import "github.com/Amirali-nourian/Todo-list-golang/internal/domain"
+
+// Ø§ÛŒÙ† interface Ø¨Ù‡ Service Ù…ÛŒâ€ŒÚ¯Ù‡ Ú©Ù‡ Ø§Ø² Repository Ú†ÛŒ Ù…ÛŒâ€ŒØ®ÙˆØ§Ø¯
+// Ø§ÛŒÙ† Ø¨Ø§ÛŒØ¯ Ø¨Ø§ ÙØ§ÛŒÙ„ repository.go Ù…Ø§ Ù…Ú† Ø¨Ø§Ø´Ù‡
+type TodoRepository interface {
+	Create(todo *domain.Todo) error
+	GetAll() ([]domain.Todo, error)
+	GetByID(id uint) (*domain.Todo, error)
+	Update(todo *domain.Todo) error
+	Delete(id uint) error
+}
 
 type TodoService struct {
-    Repo repository.TodoRepository
+	repo TodoRepository
 }
 
-func NewTodoService(repo repository.TodoRepository) *TodoService {
-    return &TodoService{Repo: repo}
+func NewTodoService(repo TodoRepository) *TodoService {
+	return &TodoService{repo: repo}
 }
 
-func (s *TodoService) CreateTodo(title string) (*entity.Todo, error) {
-    todo := entity.NewTodo(title)
-    err := s.Repo.Save(todo)
-    if err != nil {
-        return nil, err
-    }
-    return todo, nil
+func (s *TodoService) CreateTodo(todo *domain.Todo) error {
+	return s.repo.Create(todo)
 }
 
-func (s *TodoService) GetTodo(id uint) (*entity.Todo, error) {
-    return s.Repo.FindByID(id)
+func (s *TodoService) GetAllTodos() ([]domain.Todo, error) {
+	return s.repo.GetAll()
 }
 
-func (s *TodoService) UpdateTodo(id uint, completed bool) error {
-    todo, err := s.Repo.FindByID(id)
-    if err != nil {
-        return err
-    }
-    todo.Completed = completed
-    return s.Repo.Save(todo)
+func (s *TodoService) GetTodoByID(id uint) (*domain.Todo, error) {
+	return s.repo.GetByID(id)
+}
+
+func (s *TodoService) UpdateTodo(todo *domain.Todo) error {
+	return s.repo.Update(todo)
 }
 
 func (s *TodoService) DeleteTodo(id uint) error {
-    todo, err := s.Repo.FindByID(id)
-    if err != nil {
-        return err
-    }
-    return s.Repo.Delete(todo.ID)
-}
-
-func (s *TodoService) ListTodos() ([]*entity.Todo, error) {
-    return s.Repo.FindAll()
+	return s.repo.Delete(id)
 }
