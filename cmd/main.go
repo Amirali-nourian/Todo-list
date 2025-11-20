@@ -1,36 +1,61 @@
 package main
 
 import (
-	"todo-list-golang/internal/domain/service"
+	"log"
+	"todo-list-golang/internal/config"
+	"todo-list-golang/internal/domain"
 	"todo-list-golang/internal/handler"
-	"todo-list-golang/internal/infrastructure/repository"
-
-	_ "todo-list-golang/docs"
+	"todo-list-golang/internal/domain/repository"
+	"todo-list-golang/internal/domain/service"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "todo-list-golang/docs"
 )
 
+// @title Todo List API
+// @version 1.0
+// @description A simple Todo List API with Swagger documentation
+// @host localhost:8080
+// @BasePath /api/v1
 func main() {
-	repo := repository.NewInMemoryTodoRepo()
+	// Initialize database
+	db := config.InitDB()
 
-	svc := service.NewTodoService(repo)
-
-	h := handler.NewTodoHandler(svc)
-
-	r := gin.Default()
-
-	v1 := r.Group("/api/v1/todos")
-	{
-		v1.POST("/", h.Create)
-		v1.GET("/", h.GetAll)
-		v1.GET("/:id", h.GetOne)
-		v1.PUT("/:id", h.Update)
-		v1.DELETE("/:id", h.Delete)
+	// Auto migrate the schema
+	if err := db.AutoMigrate(&domain.Todo{}); err != nil {
+		log.Fatal("Failed to migrate database:", err)
 	}
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// Initialize layers
+	todoRepo := repository.NewTodoRepository(db)
+	todoService := service.NewTodoService(todoRepo)
+	todoHandler := handler.NewTodoHandler(todoService)
 
-	r.Run(":8080")
+	// Setup Gin router
+	router := gin.Default()
+
+	// Swagger endpoint
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// API routes
+	v1 := router.Group("/api/v1")
+	{
+		todos := v1.Group("/todos")
+		{
+			todos.POST("", todoHandler.CreateTodo)
+			todos.GET("", todoHandler.GetAllTodos)
+			todos.GET("/:id", todoHandler.GetTodoByID)
+			todos.PUT("/:id", todoHandler.UpdateTodo)
+			todos.DELETE("/:id", todoHandler.DeleteTodo)
+		}
+	}
+
+	// Start server
+	log.Println("Server starting on :8080")
+	if err := router.Run(":8080"); err != nil {
+		log.Fatal("Failed to start server:", err)
+	}
 }
