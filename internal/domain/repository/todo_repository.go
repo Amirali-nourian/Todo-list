@@ -1,8 +1,8 @@
-package repository
+﻿package repository
 
 import (
 	"errors"
-	"todo-list-golang/internal/domain"
+	"github.com/Amirali-nourian/Todo-list-golang/internal/domain"
 	"gorm.io/gorm"
 )
 

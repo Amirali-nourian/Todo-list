@@ -1,9 +1,9 @@
-package repository
+﻿package repository
 
 import (
     "errors"
     "sync"
-    "todo-list-golang/internal/domain/entity"
+    "github.com/Amirali-nourian/Todo-list-golang/internal/domain/entity"
 )
 
 var ErrNotFound = errors.New("todo not found")

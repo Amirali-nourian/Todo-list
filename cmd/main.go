@@ -1,18 +1,18 @@
-package main
+﻿package main
 
 import (
 	"log"
-	"todo-list-golang/internal/config"
-	"todo-list-golang/internal/domain"
-	"todo-list-golang/internal/handler"
-	"todo-list-golang/internal/domain/repository"
-	"todo-list-golang/internal/domain/service"
+	"github.com/Amirali-nourian/Todo-list-golang/internal/config"
+	"github.com/Amirali-nourian/Todo-list-golang/internal/domain"
+	"github.com/Amirali-nourian/Todo-list-golang/internal/handler"
+	"github.com/Amirali-nourian/Todo-list-golang/internal/domain/repository"
+	"github.com/Amirali-nourian/Todo-list-golang/internal/domain/service"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	_ "todo-list-golang/docs"
+	_ "github.com/Amirali-nourian/Todo-list-golang/docs"
 )
 
 // @title Todo List API

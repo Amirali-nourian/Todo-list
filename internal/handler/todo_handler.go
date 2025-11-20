@@ -1,10 +1,10 @@
-package handler
+﻿package handler
 
 import (
 	"net/http"
 	"strconv"
-	"todo-list-golang/internal/domain"
-	"todo-list-golang/internal/domain/service" // مطمئن شو که این import درسته
+	"github.com/Amirali-nourian/Todo-list-golang/internal/domain"
+	"github.com/Amirali-nourian/Todo-list-golang/internal/domain/service" // Ù…Ø·Ù…Ø¦Ù† Ø´Ùˆ Ú©Ù‡ Ø§ÛŒÙ† import Ø¯Ø±Ø³ØªÙ‡
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,7 +35,7 @@ func (h *TodoHandler) CreateTodo(c *gin.Context) {
 		return
 	}
 
-	// حالا کل آبجکت todo رو به سرویس می‌فرستیم
+	// Ø­Ø§Ù„Ø§ Ú©Ù„ Ø¢Ø¨Ø¬Ú©Øª todo Ø±Ùˆ Ø¨Ù‡ Ø³Ø±ÙˆÛŒØ³ Ù…ÛŒâ€ŒÙØ±Ø³ØªÛŒÙ…
 	if err := h.Service.CreateTodo(&todo); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create todo"})
 		return
@@ -53,7 +53,7 @@ func (h *TodoHandler) CreateTodo(c *gin.Context) {
 // @Failure 500 {object} map[string]string
 // @Router /todos [get]
 func (h *TodoHandler) GetAllTodos(c *gin.Context) {
-	// اسم تابع در سرویس GetAllTodos بود
+	// Ø§Ø³Ù… ØªØ§Ø¨Ø¹ Ø¯Ø± Ø³Ø±ÙˆÛŒØ³ GetAllTodos Ø¨ÙˆØ¯
 	todos, err := h.Service.GetAllTodos()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get todos"})
@@ -80,7 +80,7 @@ func (h *TodoHandler) GetTodoByID(c *gin.Context) {
 		return
 	}
 
-	// اسم تابع در سرویس GetTodoByID بود
+	// Ø§Ø³Ù… ØªØ§Ø¨Ø¹ Ø¯Ø± Ø³Ø±ÙˆÛŒØ³ GetTodoByID Ø¨ÙˆØ¯
 	todo, err := h.Service.GetTodoByID(uint(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
@@ -111,23 +111,23 @@ func (h *TodoHandler) UpdateTodo(c *gin.Context) {
 		return
 	}
 
-	// اول چک می‌کنیم todo وجود داره
+	// Ø§ÙˆÙ„ Ú†Ú© Ù…ÛŒâ€ŒÚ©Ù†ÛŒÙ… todo ÙˆØ¬ÙˆØ¯ Ø¯Ø§Ø±Ù‡
 	todo, err := h.Service.GetTodoByID(uint(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
 		return
 	}
 
-	// دیتای جدید رو از body می‌خونیم و روی آبجکت قبلی می‌ریزیم
+	// Ø¯ÛŒØªØ§ÛŒ Ø¬Ø¯ÛŒØ¯ Ø±Ùˆ Ø§Ø² body Ù…ÛŒâ€ŒØ®ÙˆÙ†ÛŒÙ… Ùˆ Ø±ÙˆÛŒ Ø¢Ø¨Ø¬Ú©Øª Ù‚Ø¨Ù„ÛŒ Ù…ÛŒâ€ŒØ±ÛŒØ²ÛŒÙ…
 	if err := c.ShouldBindJSON(&todo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// مطمئن می‌شیم ID عوض نشده باشه
+	// Ù…Ø·Ù…Ø¦Ù† Ù…ÛŒâ€ŒØ´ÛŒÙ… ID Ø¹ÙˆØ¶ Ù†Ø´Ø¯Ù‡ Ø¨Ø§Ø´Ù‡
 	todo.ID = uint(id)
 
-	// سرویس ما یک آبجکت کامل todo می‌خواست
+	// Ø³Ø±ÙˆÛŒØ³ Ù…Ø§ ÛŒÚ© Ø¢Ø¨Ø¬Ú©Øª Ú©Ø§Ù…Ù„ todo Ù…ÛŒâ€ŒØ®ÙˆØ§Ø³Øª
 	if err := h.Service.UpdateTodo(todo); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update todo"})
 		return

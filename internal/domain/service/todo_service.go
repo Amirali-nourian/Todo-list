@@ -1,9 +1,9 @@
-package service
+﻿package service
 
-import "todo-list-golang/internal/domain"
+import "github.com/Amirali-nourian/Todo-list-golang/internal/domain"
 
-// این interface به Service می‌گه که از Repository چی می‌خواد
-// این باید با فایل repository.go ما مچ باشه
+// Ø§ÛŒÙ† interface Ø¨Ù‡ Service Ù…ÛŒâ€ŒÚ¯Ù‡ Ú©Ù‡ Ø§Ø² Repository Ú†ÛŒ Ù…ÛŒâ€ŒØ®ÙˆØ§Ø¯
+// Ø§ÛŒÙ† Ø¨Ø§ÛŒØ¯ Ø¨Ø§ ÙØ§ÛŒÙ„ repository.go Ù…Ø§ Ù…Ú† Ø¨Ø§Ø´Ù‡
 type TodoRepository interface {
 	Create(todo *domain.Todo) error
 	GetAll() ([]domain.Todo, error)

@@ -1,30 +1,25 @@
-# Build stage
+# builder stage
 FROM golang:alpine AS builder
+
+# install git and ca-certificates (needed for go mod download)
+RUN apk add --no-cache git ca-certificates && update-ca-certificates
 
 WORKDIR /app
 
-ENV GOPROXY=direct
-
-# Copy go mod files
+# cache dependencies first
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy source code
+# copy source and build
 COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /todo ./cmd
 
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/main.go
-
-# Run stage
+# final stage
 FROM alpine:latest
-
-RUN apk --no-cache add ca-certificates
-
+RUN apk add --no-cache ca-certificates
 WORKDIR /root/
 
-# Copy the binary from builder
-COPY --from=builder /app/main .
+COPY --from=builder /todo /todo
 
 EXPOSE 8080
-
-CMD ["./main"]
+CMD ["/todo"]
