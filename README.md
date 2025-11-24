@@ -1,5 +1,4 @@
 
-
 # Todo API – Go Clean Architecture
 
 A simple and clean Todo REST API built with **Go**, **Gin**, and **Swagger**, following principles of Clean Architecture.  
@@ -14,7 +13,7 @@ This project is intended as both a learning exercise and a portfolio-ready examp
 ```bash
 git clone https://github.com/Amirali-nourian/Todo-list.git
 cd Todo-list
-
+````
 
 ### 2. Environment variables
 
@@ -30,7 +29,7 @@ Then open `.env` and adjust values as needed.
 
 ## ▶️ Run locally (without Docker)
 
-
+```bash
 go mod tidy
 go run ./cmd/main.go
 ```
@@ -39,15 +38,15 @@ Server default URL:
 
 ```
 http://localhost:8080
-
+```
 
 ---
 
 ## 🐳 Run with Docker / Docker Compose
 
-
+```bash
 docker-compose up --build
-
+```
 
 After containers start:
 
@@ -110,9 +109,9 @@ Base path: `/api/v1`
 
 ## ✅ Running Tests
 
-
+```bash
 go test ./...
-
+```
 
 ---
 
