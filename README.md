@@ -147,7 +147,7 @@ Created and maintained by **Amirali Nourian**.
 ### ۱. کلون کردن مخزن
 
 ```bash
-git clone [https://github.com/Amirali-nourian/Todo-list.git](https://github.com/Amirali-nourian/Todo-list.git)
+git clone https://github.com/Amirali-nourian/Todo-list.git
 cd Todo-list
 ```
 
