@@ -2,11 +2,12 @@
 
 import (
 	"log"
+
 	"github.com/Amirali-nourian/Todo-list-golang/internal/config"
 	"github.com/Amirali-nourian/Todo-list-golang/internal/domain"
-	"github.com/Amirali-nourian/Todo-list-golang/internal/handler"
 	"github.com/Amirali-nourian/Todo-list-golang/internal/domain/repository"
 	"github.com/Amirali-nourian/Todo-list-golang/internal/domain/service"
+	"github.com/Amirali-nourian/Todo-list-golang/internal/handler"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -37,6 +38,11 @@ func main() {
 	// Setup Gin router
 	router := gin.Default()
 
+	// سرو کردن فایل index.html در صفحه اصلی
+	router.StaticFile("/", "./web/index.html")
+	// -------------------------
+
+	// Swagger endpoint
 	// Swagger endpoint
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

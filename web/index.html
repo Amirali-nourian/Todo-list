@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدیریت کارهای من</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+            margin: 0;
+            color: #444;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        /* استایل فرم ورودی */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid #eef2f7;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: 0.3s;
+            outline: none;
+        }
+        input:focus { border-color: #007bff; }
+        
+        button#add-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: transform 0.2s, background 0.3s;
+        }
+        button#add-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* استایل کارت‌های تسک */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* فاصله بین تسک‌ها */
+        }
+        .task-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            border-right: 6px solid #ffc107; /* رنگ پیش‌فرض: زرد (در حال انجام) */
+            transition: all 0.3s ease;
+        }
+        
+        /* حالت انجام شده */
+        .task-card.completed {
+            border-right-color: #28a745; /* سبز */
+            background-color: #f8fff9;
+            opacity: 0.8;
+        }
+        .task-card.completed .task-text {
+            text-decoration: line-through;
+            color: #aaa;
+        }
+
+        .task-text {
+            font-size: 1.1rem;
+            margin-left: 10px;
+            font-weight: 500;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* دکمه‌های عملیات */
+        .btn {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .btn-status {
+            background-color: #e2e6ea;
+            color: #495057;
+        }
+        .btn-status:hover { background-color: #dbe2e8; }
+        
+        .task-card.completed .btn-status {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .btn-delete {
+            background-color: #fee2e2;
+            color: #dc3545;
+        }
+        .btn-delete:hover { background-color: #fcd2d2; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🚀 لیست کارها</h1>
+    <div class="input-group">
+        <input type="text" id="taskInput" placeholder="کار جدیدی اضافه کنید..." onkeypress="handleEnter(event)">
+        <button id="add-btn" onclick="createTodo()">افزودن</button>
+    </div>
+    
+    <div id="taskList" class="task-list"></div>
+</div>
+
+<script>
+    const API_URL = '/api/v1/todos';
+
+    function handleEnter(e) {
+        if (e.key === 'Enter') createTodo();
+    }
+
+    async function fetchTodos() {
+        try {
+            const response = await fetch(API_URL);
+            const todos = await response.json();
+            renderTodos(todos);
+        } catch (error) {
+            console.error('Error fetching todos:', error);
+        }
+    }
+
+    function renderTodos(todos) {
+        const list = document.getElementById('taskList');
+        list.innerHTML = '';
+        
+        // مرتب‌سازی: انجام‌نشده‌ها بالا باشند
+        todos.sort((a, b) => a.completed - b.completed);
+
+        todos.forEach(todo => {
+            const div = document.createElement('div');
+            // کلاس completed را اگر کار تمام شده اضافه می‌کنیم
+            div.className = `task-card ${todo.completed ? 'completed' : ''}`;
+            
+            div.innerHTML = `
+                <span class="task-text">${todo.title}</span>
+                <div class="actions">
+                    <button class="btn btn-status" onclick="toggleTodo(${todo.id}, ${!todo.completed}, '${todo.title}')">
+                        ${todo.completed ? '✔ تکمیل شده' : '◻ انجام دادن'}
+                    </button>
+                    <button class="btn btn-delete" onclick="deleteTodo(${todo.id})">
+                        حذف 🗑
+                    </button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    async function createTodo() {
+        const input = document.getElementById('taskInput');
+        if (!input.value.trim()) return;
+        
+        await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: input.value })
+        });
+        input.value = '';
+        fetchTodos();
+    }
+
+    async function deleteTodo(id) {
+        if(!confirm('آیا مطمئن هستید؟')) return;
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        fetchTodos();
+    }
+
+    // نکته مهم: طبق کد بک‌اند شما، برای آپدیت باید حتماً title هم فرستاده شود
+    async function toggleTodo(id, isCompleted, title) {
+        await fetch(`${API_URL}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                title: title, 
+                completed: isCompleted 
+            })
+        });
+        fetchTodos();
+    }
+
+    fetchTodos();
+</script>
+
+</body>
+</html>
