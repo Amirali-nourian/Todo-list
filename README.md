@@ -1,8 +1,7 @@
-
 # Todo API – Go Clean Architecture
 
-A simple and clean Todo REST API built with **Go**, **Gin**, and **Swagger**, following principles of Clean Architecture.  
-This project is intended as both a learning exercise and a portfolio-ready example of building maintainable HTTP services in Go.
+A simple and clean Todo REST API built with **Go**, **Gin**, **PostgreSQL**, and **Swagger**, following principles of Clean Architecture.  
+This project includes a modern **Web UI** and is intended as both a learning exercise and a portfolio-ready example of building maintainable HTTP services in Go.
 
 ---
 
@@ -11,11 +10,11 @@ This project is intended as both a learning exercise and a portfolio-ready examp
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Amirali-nourian/Todo-list.git
+git clone [https://github.com/Amirali-nourian/Todo-list.git](https://github.com/Amirali-nourian/Todo-list.git)
 cd Todo-list
 ````
 
-### 2. Environment variables
+### 2\. Environment variables
 
 Copy the example environment file:
 
@@ -25,9 +24,11 @@ cp .env.example .env
 
 Then open `.env` and adjust values as needed.
 
----
+-----
 
 ## ▶️ Run locally (without Docker)
+
+Ensure you have a running PostgreSQL instance and update `.env` with your database credentials.
 
 ```bash
 go mod tidy
@@ -40,9 +41,9 @@ Server default URL:
 http://localhost:8080
 ```
 
----
+-----
 
-## 🐳 Run with Docker / Docker Compose
+## 🐳 Run with Docker / Docker Compose (Recommended)
 
 ```bash
 docker-compose up --build
@@ -50,10 +51,10 @@ docker-compose up --build
 
 After containers start:
 
-* API URL: `http://localhost:8080`
-* Swagger UI: `http://localhost:8080/swagger/index.html`
+  * **Web UI (Task Manager):** `http://localhost:8080`
+  * **Swagger UI:** `http://localhost:8080/swagger/index.html`
 
----
+-----
 
 ## 📚 API Documentation (Swagger)
 
@@ -65,7 +66,7 @@ http://localhost:8080/swagger/index.html
 
 Use **Try it out** to test endpoints directly.
 
----
+-----
 
 ## 🔗 API Endpoints
 
@@ -79,18 +80,20 @@ Base path: `/api/v1`
 | PUT    | /todos/{id} | Update a todo    |
 | DELETE | /todos/{id} | Delete a todo    |
 
----
+-----
 
 ## 🧱 Tech Stack
 
-* Go
-* Gin
-* Clean Architecture
-* Docker & Docker Compose
-* Swagger / OpenAPI
-* In-memory storage (can be replaced with real DB)
+  * Go
+  * Gin
+  * Clean Architecture
+  * Docker & Docker Compose
+  * Swagger / OpenAPI
+  * **PostgreSQL** (Database)
+  * **GORM** (ORM)
+  * **HTML/CSS/JS** (Web UI)
 
----
+-----
 
 ## 🗂 Project Structure
 
@@ -98,6 +101,7 @@ Base path: `/api/v1`
 .
 ├── cmd/               # Application entrypoint
 ├── internal/          # Use cases, handlers, domain logic
+├── web/               # Frontend files (HTML/CSS/JS)
 ├── docs/              # Swagger files
 ├── Dockerfile
 ├── docker-compose.yml
@@ -105,7 +109,7 @@ Base path: `/api/v1`
 └── README.md
 ```
 
----
+-----
 
 ## ✅ Running Tests
 
@@ -113,40 +117,37 @@ Base path: `/api/v1`
 go test ./...
 ```
 
----
+-----
 
 ## 🧠 Future Improvements
 
-* Add PostgreSQL / MySQL
-* Add JWT authentication
-* Add pagination & filters
-* Add CI/CD via GitHub Actions
-* Better logging and error handling
+  * Add JWT authentication
+  * Add pagination & filters
+  * Add CI/CD via GitHub Actions
+  * Better logging and error handling
 
----
+-----
 
 ## 👤 Author
 
 Created and maintained by **Amirali Nourian**.
 
----
+-----
 
----
-
+-----
 
 ## Todo API – معماری پاک با Go
 
-این پروژه یک API ساده برای مدیریت کارها (Todo) است که با **Go**، فریم‌ورک **Gin** و مستندسازی **Swagger** ساخته شده و ساختار آن بر پایهٔ اصول «معماری پاک» طراحی شده است.
-هدف پروژه، هم یادگیری و هم ارائهٔ یک نمونه‌کار مناسب برای رزومه است.
+این پروژه یک API مدیریت کارها (Todo) است که با **Go**، فریم‌ورک **Gin**، دیتابیس **PostgreSQL** و مستندسازی **Swagger** ساخته شده و دارای یک **رابط کاربری (Web UI)** مدرن است. ساختار پروژه بر پایهٔ اصول «معماری پاک» طراحی شده است.
 
----
+-----
 
 ## 🚀 شروع سریع
 
 ### ۱. کلون کردن مخزن
 
 ```bash
-git clone https://github.com/Amirali-nourian/Todo-list.git
+git clone [https://github.com/Amirali-nourian/Todo-list.git](https://github.com/Amirali-nourian/Todo-list.git)
 cd Todo-list
 ```
 
@@ -158,9 +159,11 @@ cp .env.example .env
 
 سپس مقادیر را تغییر دهید.
 
----
+-----
 
 ## ▶️ اجرای پروژه بدون Docker
+
+ابتدا مطمئن شوید سرویس PostgreSQL در حال اجراست و اطلاعات اتصال را در فایل `.env` وارد کرده‌اید.
 
 ```bash
 go mod tidy
@@ -173,9 +176,9 @@ go run ./cmd/main.go
 http://localhost:8080
 ```
 
----
+-----
 
-## 🐳 اجرای پروژه با Docker / Docker Compose
+## 🐳 اجرای پروژه با Docker / Docker Compose (پیشنهادی)
 
 ```bash
 docker-compose up --build
@@ -183,10 +186,10 @@ docker-compose up --build
 
 پس از اجرا:
 
-* آدرس API: `http://localhost:8080`
-* مستندات Swagger: `http://localhost:8080/swagger/index.html`
+  * **رابط کاربری (مدیریت کارها):** `http://localhost:8080`
+  * **مستندات Swagger:** `http://localhost:8080/swagger/index.html`
 
----
+-----
 
 ## 📚 مستندات API
 
@@ -196,7 +199,7 @@ http://localhost:8080/swagger/index.html
 
 می‌توانید مستقیماً درخواست‌ها را تست کنید.
 
----
+-----
 
 ## 🔗 مسیرهای API
 
@@ -210,18 +213,20 @@ http://localhost:8080/swagger/index.html
 | PUT    | /todos/{id} | به‌روزرسانی کار   |
 | DELETE | /todos/{id} | حذف کار           |
 
----
+-----
 
 ## 🧱 فناوری‌های استفاده‌شده
 
-* زبان Go
-* Gin
-* معماری پاک
-* Docker و Docker Compose
-* Swagger
-* حافظهٔ درون‌برنامه‌ای (قابل ارتقا به دیتابیس واقعی)
+  * زبان Go
+  * Gin
+  * معماری پاک
+  * Docker و Docker Compose
+  * Swagger
+  * **PostgreSQL** (دیتابیس)
+  * **GORM** (ORM)
+  * **HTML/CSS/JS** (رابط کاربری وب)
 
----
+-----
 
 ## 🗂 ساختار پروژه
 
@@ -229,6 +234,7 @@ http://localhost:8080/swagger/index.html
 .
 ├── cmd/               # نقطه ورود برنامه
 ├── internal/          # منطق برنامه و لایه‌ها
+├── web/               # فایل‌های فرانت‌اند
 ├── docs/              # فایل‌های Swagger
 ├── Dockerfile
 ├── docker-compose.yml
@@ -236,7 +242,7 @@ http://localhost:8080/swagger/index.html
 └── README.md
 ```
 
----
+-----
 
 ## ✅ تست‌ها
 
@@ -244,18 +250,19 @@ http://localhost:8080/swagger/index.html
 go test ./...
 ```
 
----
+-----
 
 ## 🧠 مسیر توسعه آینده
 
-* اتصال به PostgreSQL یا MySQL
-* افزودن JWT
-* صفحه‌بندی و فیلتر
-* افزودن CI در GitHub Actions
-* بهبود لاگ‌گیری و مدیریت خطا
+  * افزودن احراز هویت با JWT
+  * صفحه‌بندی (Pagination) و فیلتر
+  * افزودن CI در GitHub Actions
+  * بهبود لاگ‌گیری و مدیریت خطا
 
----
+-----
 
 ## 👤 سازنده
 
 ساخته‌شده توسط **Amirali Nourian**.
+
+```
