@@ -10,7 +10,7 @@ This project includes a modern **Web UI** and is intended as both a learning exe
 ### 1. Clone the repository
 
 ```bash
-git clone [https://github.com/Amirali-nourian/Todo-list.git](https://github.com/Amirali-nourian/Todo-list.git)
+git clone https://github.com/Amirali-nourian/Todo-list.git
 cd Todo-list
 ````
 
